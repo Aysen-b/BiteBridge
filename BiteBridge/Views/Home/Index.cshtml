@@ -2,11 +2,31 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <button onclick="addToCart({ name: 'Burger', price: 120 })">
-    Add Burger to Cart
-</button>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="home-hero">
+    <h1>🍔 BiteBridge</h1>
+    <p>Fresh food, fast order, easy checkout.</p>
 </div>
-<div id="cart-items"></div>
+
+<div class="menu">
+    <div class="menu-card">
+        <h3>🍔 Burger</h3>
+        <p class="price">120 TL</p>
+        <button onclick="addToCart({ name: 'Burger', price: 120 })">
+            Add to Cart
+        </button>
+    </div>
+</div>
+<div class="cart-box">
+    <h3>🛒 Cart</h3>
+
+    <div id="cart-items"></div>
+    <p id="total-price"></p>
+
+    <button class="clear-btn" onclick="clearCart(); displayCart();">
+        Clear Cart
+    </button>
+
+    <button class="checkout-btn" onclick="checkout();">
+        Checkout
+    </button>
+</div>

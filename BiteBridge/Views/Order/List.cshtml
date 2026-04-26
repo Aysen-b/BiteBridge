@@ -1,0 +1,34 @@
+@model List<BiteBridge.Models.Order>
+
+<div class="orders-page">
+<h2 class="orders-title">🍔 My Orders</h2>
+
+@foreach (var order in Model)
+{
+    <div class="order-card">
+        <p><b>User:</b> @order.UserEmail</p>
+        <p class="order-total">Total: @order.TotalPrice TL</p>
+        <a href="/Order/Delete/@order.Id" class="delete-btn">
+            Delete
+        </a>
+        <p><b>Items:</b></p>
+
+<ul>
+@{
+    var grouped = order.ItemsList
+        .GroupBy(i => i.name)
+        .Select(g => new {
+            Name = g.Key,
+            Count = g.Count(),
+            Total = g.Sum(x => x.price)
+        });
+}
+
+@foreach (var item in grouped)
+{
+    <li>@item.Name x @item.Count → @item.Total TL</li>
+}
+</ul>
+    </div>
+}
+</div>

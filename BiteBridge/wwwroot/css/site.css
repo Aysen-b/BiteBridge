@@ -29,3 +29,140 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+body {
+    background: #f8f9fa;
+}
+
+.order-card {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.delete-btn {
+    color: white;
+    background: #dc3545;
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+.orders-page {
+    max-width: 900px;
+    margin: 40px auto;
+}
+
+.orders-title {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 25px;
+}
+
+.order-card {
+    background: linear-gradient(135deg, #ffffff, #f3f7ff);
+    border: none;
+    border-radius: 18px;
+    padding: 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.10);
+}
+
+.order-total {
+    font-size: 20px;
+    font-weight: 700;
+    color: #198754;
+}
+
+.delete-btn {
+    color: white;
+    background: #dc3545;
+    padding: 8px 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 12px;
+}
+.home-hero {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.home-hero h1 {
+    font-size: 50px;
+    font-weight: bold;
+}
+
+.home-hero p {
+    color: gray;
+    margin-bottom: 30px;
+}
+
+.menu {
+    display: flex;
+    justify-content: center;
+}
+
+.menu-card {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    width: 220px;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
+
+.menu-card:hover {
+    transform: scale(1.05);
+}
+
+.price {
+    font-weight: bold;
+    color: green;
+}
+
+.menu-card button {
+    background: #0d6efd;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+body {
+    background:
+        linear-gradient(rgba(255,255,255,0.88), rgba(255,255,255,0.88)),
+        url("https://images.unsplash.com/photo-1540189549336-e6e99c3679fe");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+.cart-box {
+    background: white;
+    width: 300px;
+    margin: 35px auto;
+    padding: 20px;
+    border-radius: 18px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    text-align: center;
+}
+
+.clear-btn {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+}
+
+.checkout-btn {
+    background: #198754;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+}
