@@ -16,6 +16,7 @@
         </button>
     </div>
 </div>
+
 <div class="cart-box">
     <h3>🛒 Cart</h3>
 
@@ -26,7 +27,32 @@
         Clear Cart
     </button>
 
-    <button class="checkout-btn" onclick="checkout();">
-        Checkout
+    <button class="checkout-btn" onclick="showPayment();">
+        Proceed to Payment
     </button>
+</div>
+
+<div id="payment-section" class="payment-box" style="display:none;">
+    <h3>💳 Payment Simulation</h3>
+
+    <p class="payment-note">
+        This is a simulated payment screen. Do not enter real card information.
+    </p>
+
+    <div id="payment-summary"></div>
+
+    <div class="payment-form">
+        <input id="card-name" type="text" placeholder="Card Holder Name" />
+
+        <input id="card-number" type="text" maxlength="16" placeholder="Card Number (16 digits)" />
+
+        <div class="payment-row">
+            <input id="card-expiry" type="text" maxlength="5" placeholder="MM/YY" />
+            <input id="card-cvv" type="text" maxlength="3" placeholder="CVV" />
+        </div>
+
+        <button class="pay-btn" onclick="checkout();">
+            Confirm Payment
+        </button>
+    </div>
 </div>
