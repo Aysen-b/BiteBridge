@@ -1,34 +1,55 @@
-@model List<BiteBridge.Models.Order>
+@model IEnumerable<BiteBridge.Models.Order>
+
+@{
+    ViewData["Title"] = "My Orders";
+}
 
 <div class="orders-page">
-<h2 class="orders-title">🍔 My Orders</h2>
+    <h1>🍔 My Orders</h1>
 
-@foreach (var order in Model)
-{
-    <div class="order-card">
-        <p><b>User:</b> @order.UserEmail</p>
-        <p class="order-total">Total: @order.TotalPrice TL</p>
-        <a href="/Order/Delete/@order.Id" class="delete-btn">
-            Delete
-        </a>
-        <p><b>Items:</b></p>
+    @if (!Model.Any())
+    {
+        <div class="order-card">
+            <p>No orders found.</p>
+        </div>
+    }
+    else
+    {
+        @foreach (var order in Model)
+        {
+            <div class="order-card">
+                <p><strong>Order No:</strong> BB-@order.Id</p>
+                <p><strong>User:</strong> @order.UserEmail</p>
 
-<ul>
-@{
-    var grouped = order.ItemsList
-        .GroupBy(i => i.name)
-        .Select(g => new {
-            Name = g.Key,
-            Count = g.Count(),
-            Total = g.Sum(x => x.price)
-        });
-}
+                <h3>Total: @order.TotalPrice TL</h3>
 
-@foreach (var item in grouped)
-{
-    <li>@item.Name x @item.Count → @item.Total TL</li>
-}
-</ul>
-    </div>
-}
+                <div class="order-actions">
+                    <a class="receipt-btn" asp-controller="Order" asp-action="Receipt" asp-route-id="@order.Id">
+                        View Receipt
+                    </a>
+
+                    <a class="receipt-btn" asp-controller="Order" asp-action="ReceiptPdf" asp-route-id="@order.Id">
+                        Receipt PDF
+                    </a>
+
+                    <a class="agreement-btn" asp-controller="Order" asp-action="AgreementPdf" asp-route-id="@order.Id">
+                        Agreement PDF
+                    </a>
+
+                    <a class="delete-btn" asp-controller="Order" asp-action="Delete" asp-route-id="@order.Id">
+                        Delete
+                    </a>
+                </div>
+
+                <p><strong>Items:</strong></p>
+
+                <ul>
+                    @foreach (var item in order.ItemsList)
+                    {
+                        <li>@item.name x 1 → @item.price TL</li>
+                    }
+                </ul>
+            </div>
+        }
+    }
 </div>

@@ -1,0 +1,56 @@
+@model BiteBridge.Models.Order
+
+@{
+    ViewData["Title"] = "Order Receipt";
+}
+
+<div class="receipt-page">
+    <div class="receipt-card">
+        <h1>🍔 BiteBridge Receipt</h1>
+
+        <div class="receipt-info">
+            <p><strong>Receipt No:</strong> BB-@Model.Id</p>
+            <p><strong>Customer:</strong> @Model.UserEmail</p>
+            <p><strong>Generated At:</strong> @DateTime.Now.ToString("dd.MM.yyyy HH:mm")</p>
+            <p><strong>Payment Status:</strong> Successful</p>
+        </div>
+
+        <hr />
+
+        <h3>Purchased Items</h3>
+
+        <table class="receipt-table">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.ItemsList)
+                {
+                    <tr>
+                        <td>@item.name</td>
+                        <td>@item.price TL</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <h2 class="receipt-total">Total: @Model.TotalPrice TL</h2>
+
+        <div class="receipt-actions">
+            <a class="receipt-btn" asp-controller="Order" asp-action="ReceiptPdf" asp-route-id="@Model.Id">
+                Download Receipt PDF
+            </a>
+
+            <a class="agreement-btn" asp-controller="Order" asp-action="AgreementPdf" asp-route-id="@Model.Id">
+                Download Agreement PDF
+            </a>
+
+            <button class="print-btn" onclick="window.print()">
+                Print
+            </button>
+        </div>
+    </div>
+</div>
