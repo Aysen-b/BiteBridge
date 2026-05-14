@@ -583,3 +583,70 @@ body {
     border-radius: 12px;
     margin-top: 15px;
 }
+.notifications-page {
+    width: 90%;
+    max-width: 900px;
+    margin: 40px auto;
+}
+
+.notifications-page h1 {
+    font-size: 36px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.notifications-subtitle {
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.notification-card {
+    background: white;
+    padding: 22px;
+    border-radius: 18px;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.13);
+    margin-bottom: 18px;
+    border-left: 6px solid #0d6efd;
+}
+
+.notification-card.read {
+    border-left-color: #6c757d;
+    opacity: 0.85;
+}
+
+.notification-card.unread {
+    border-left-color: #198754;
+}
+
+.notification-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+}
+
+.read-badge,
+.unread-badge {
+    color: white;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.read-badge {
+    background: #6c757d;
+}
+
+.unread-badge {
+    background: #198754;
+}
+
+.notification-date {
+    color: #777;
+    font-size: 14px;
+}
+
+.notification-actions {
+    margin-top: 12px;
+}

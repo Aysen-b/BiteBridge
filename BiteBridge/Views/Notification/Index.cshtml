@@ -1,0 +1,68 @@
+@model IEnumerable<BiteBridge.Models.EmailNotification>
+
+@{
+    ViewData["Title"] = "My Notifications";
+}
+
+<div class="notifications-page">
+    <h1>📧 My Email Notifications</h1>
+    <p class="notifications-subtitle">
+        Simulated email notifications created by the BiteBridge system.
+    </p>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="notification-card">
+            <p>No notifications found.</p>
+        </div>
+    }
+    else
+    {
+        @foreach (var notification in Model)
+        {
+            <div class="notification-card @(notification.IsRead ? "read" : "unread")">
+                <div class="notification-header">
+                    <h3>@notification.Subject</h3>
+
+                    @if (notification.IsRead)
+                    {
+                        <span class="read-badge">Read</span>
+                    }
+                    else
+                    {
+                        <span class="unread-badge">Unread</span>
+                    }
+                </div>
+
+                <p>@notification.Message</p>
+
+                @if (notification.OrderId != null)
+                {
+                    <p><strong>Related Order:</strong> BB-@notification.OrderId</p>
+                }
+
+                <p class="notification-date">
+                    @notification.CreatedAt.ToString("dd.MM.yyyy HH:mm")
+                </p>
+
+                <div class="notification-actions">
+                    @if (!notification.IsRead)
+                    {
+                        <a class="dashboard-btn"
+                           asp-controller="Notification"
+                           asp-action="MarkAsRead"
+                           asp-route-id="@notification.Id">
+                            Mark as Read
+                        </a>
+                    }
+
+                    <a class="dashboard-btn secondary"
+                       asp-controller="Order"
+                       asp-action="List">
+                        View Orders
+                    </a>
+                </div>
+            </div>
+        }
+    }
+</div>

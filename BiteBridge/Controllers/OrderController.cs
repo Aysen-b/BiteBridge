@@ -14,22 +14,34 @@ namespace BiteBridge.Controllers
         }
 
         [HttpPost]
-        public IActionResult Checkout([FromBody] Order order)
-        {
-            if (User.Identity == null || !User.Identity.IsAuthenticated)
-            {
-                return Unauthorized();
-            }
+public IActionResult Checkout([FromBody] Order order)
+{
+    if (User.Identity == null || !User.Identity.IsAuthenticated)
+    {
+        return Unauthorized();
+    }
 
-            order.UserEmail = User.Identity.Name ?? "";
+    order.UserEmail = User.Identity.Name ?? "";
 
-            _context.Orders.Add(order);
-            _context.SaveChanges();
+    _context.Orders.Add(order);
+    _context.SaveChanges();
 
-            AddLog("Info", "PaymentSuccess", order.UserEmail, $"Order BB-{order.Id} was created after simulated payment.");
+    _context.EmailNotifications.Add(new EmailNotification
+    {
+        UserEmail = order.UserEmail,
+        Subject = "BiteBridge Order Confirmation",
+        Message = $"Your order BB-{order.Id} has been received successfully. Total amount: {order.TotalPrice} TL.",
+        OrderId = order.Id,
+        IsRead = false
+    });
 
-            return Ok();
-        }
+    _context.SaveChanges();
+
+    AddLog("Info", "PaymentSuccess", order.UserEmail, $"Order BB-{order.Id} was created after simulated payment.");
+    AddLog("Info", "EmailNotificationCreated", order.UserEmail, $"Order confirmation notification created for order BB-{order.Id}.");
+
+    return Ok();
+}
 
         public IActionResult List()
         {
