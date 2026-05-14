@@ -26,6 +26,8 @@ namespace BiteBridge.Controllers
             _context.Orders.Add(order);
             _context.SaveChanges();
 
+            AddLog("Info", "PaymentSuccess", order.UserEmail, $"Order BB-{order.Id} was created after simulated payment.");
+
             return Ok();
         }
 
@@ -60,6 +62,8 @@ namespace BiteBridge.Controllers
 
             if (order != null)
             {
+                AddLog("Warning", "OrderDeleted", order.UserEmail, $"Order BB-{order.Id} was deleted.");
+
                 _context.Orders.Remove(order);
                 _context.SaveChanges();
             }
@@ -87,6 +91,8 @@ namespace BiteBridge.Controllers
             {
                 return NotFound();
             }
+
+            AddLog("Info", "ReceiptPdfGenerated", order.UserEmail, $"Receipt PDF generated for order BB-{order.Id}.");
 
             var lines = new List<string>
             {
@@ -121,6 +127,8 @@ namespace BiteBridge.Controllers
             {
                 return NotFound();
             }
+
+            AddLog("Info", "AgreementPdfGenerated", order.UserEmail, $"Agreement PDF generated for order BB-{order.Id}.");
 
             var lines = new List<string>
             {
@@ -165,6 +173,19 @@ namespace BiteBridge.Controllers
 
             return _context.Orders
                 .FirstOrDefault(o => o.Id == id && o.UserEmail == userEmail);
+        }
+
+        private void AddLog(string level, string action, string? userEmail, string? details)
+        {
+            _context.SystemLogs.Add(new SystemLog
+            {
+                Level = level,
+                Action = action,
+                UserEmail = userEmail,
+                Details = details
+            });
+
+            _context.SaveChanges();
         }
 
         private byte[] GenerateSimplePdf(string title, List<string> lines)

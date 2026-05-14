@@ -1,0 +1,88 @@
+@model IEnumerable<BiteBridge.Models.SystemLog>
+
+@{
+    ViewData["Title"] = "System Logs";
+}
+
+<div class="logs-page">
+    <h1>🧾 System Logs</h1>
+    <p class="logs-subtitle">Admin monitoring page for authentication, payment, order and document actions.</p>
+
+    <form method="get" class="log-filter-box">
+        <input type="text" name="search" value="@ViewBag.Search" placeholder="Search action, user or details..." />
+
+        <select name="level">
+            <option value="">All Levels</option>
+            <option value="Info" selected="@(ViewBag.Level == "Info")">Info</option>
+            <option value="Warning" selected="@(ViewBag.Level == "Warning")">Warning</option>
+            <option value="Error" selected="@(ViewBag.Level == "Error")">Error</option>
+        </select>
+
+        <button type="submit">Filter</button>
+
+        <a class="clear-log-filter" asp-controller="Admin" asp-action="Logs">Clear</a>
+    </form>
+
+    <div class="logs-table-card">
+        <table class="logs-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Level</th>
+                    <th>Action</th>
+                    <th>User</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="5">No logs found.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var log in Model)
+                    {
+                        <tr>
+                            <td>@log.CreatedAt.ToString("dd.MM.yyyy HH:mm:ss")</td>
+                            <td>
+                                <span class="log-level">@log.Level</span>
+                            </td>
+                            <td>@log.Action</td>
+                            <td>@log.UserEmail</td>
+                            <td>@log.Details</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination-box">
+        @if (ViewBag.Page > 1)
+        {
+            <a asp-controller="Admin"
+               asp-action="Logs"
+               asp-route-search="@ViewBag.Search"
+               asp-route-level="@ViewBag.Level"
+               asp-route-page="@(ViewBag.Page - 1)">
+                Previous
+            </a>
+        }
+
+        <span>Page @ViewBag.Page / @ViewBag.TotalPages</span>
+
+        @if (ViewBag.Page < ViewBag.TotalPages)
+        {
+            <a asp-controller="Admin"
+               asp-action="Logs"
+               asp-route-search="@ViewBag.Search"
+               asp-route-level="@ViewBag.Level"
+               asp-route-page="@(ViewBag.Page + 1)">
+                Next
+            </a>
+        }
+    </div>
+</div>

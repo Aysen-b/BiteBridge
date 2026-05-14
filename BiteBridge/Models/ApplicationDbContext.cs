@@ -10,5 +10,6 @@ namespace BiteBridge.Models
         {
         }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<SystemLog> SystemLogs { get; set; }
     }
 }
