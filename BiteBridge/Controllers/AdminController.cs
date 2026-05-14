@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using BiteBridge.Models;
 
@@ -8,14 +9,39 @@ namespace BiteBridge.Controllers
     public class AdminController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public AdminController(ApplicationDbContext context)
+        public AdminController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
-        public IActionResult Logs(string? search, string? level, int page = 1)
+        public async Task<IActionResult> Index()
         {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null || user.RoleName != "Admin")
+            {
+                return RedirectToAction("Dashboard", "Home");
+            }
+
+            ViewBag.TotalOrders = _context.Orders.Count();
+            ViewBag.TotalLogs = _context.SystemLogs.Count();
+            ViewBag.TotalUsers = _userManager.Users.Count();
+
+            return View();
+        }
+
+        public async Task<IActionResult> Logs(string? search, string? level, int page = 1)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null || user.RoleName != "Admin")
+            {
+                return RedirectToAction("Dashboard", "Home");
+            }
+
             int pageSize = 10;
 
             var query = _context.SystemLogs.AsQueryable();
@@ -44,7 +70,7 @@ namespace BiteBridge.Controllers
             ViewBag.Search = search;
             ViewBag.Level = level;
             ViewBag.Page = page;
-            ViewBag.TotalPages = (int)Math.Ceiling(totalLogs / (double)pageSize);
+            ViewBag.TotalPages = Math.Max(1, (int)Math.Ceiling(totalLogs / (double)pageSize));
 
             return View(logs);
         }

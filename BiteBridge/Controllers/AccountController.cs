@@ -31,24 +31,31 @@ namespace BiteBridge.Controllers
         {
             if (ModelState.IsValid)
             {
+                var allowedRoles = new[] { "User", "Caterer", "Admin" };
+
+                if (!allowedRoles.Contains(model.RoleName))
+                {
+                    model.RoleName = "User";
+                }
+
                 var user = new ApplicationUser
                 {
                     UserName = model.Email,
                     Email = model.Email,
-                    RoleName = "User"
+                    RoleName = model.RoleName
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
                 {
-                    AddLog("Info", "Register", model.Email, "New user registered.");
+                    AddLog("Info", "Register", model.Email, $"New {model.RoleName} account registered.");
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
 
                     AddLog("Info", "Login", model.Email, "User automatically logged in after registration.");
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Dashboard", "Home");
                 }
 
                 foreach (var error in result.Errors)
@@ -84,7 +91,7 @@ namespace BiteBridge.Controllers
                 if (result.Succeeded)
                 {
                     AddLog("Info", "LoginSuccess", model.Email, "User logged in successfully.");
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Dashboard", "Home");
                 }
 
                 AddLog("Warning", "LoginFailed", model.Email, "Invalid login attempt.");
