@@ -18,13 +18,28 @@ public class HomeController : Controller
         _context = context;
     }
 
-    public IActionResult Index()
+    public IActionResult Index(string? location)
 {
-    var menuItems = _context.MenuItems
+    var query = _context.MenuItems
         .Include(m => m.Caterer)
         .Include(m => m.Options)
+        .AsQueryable();
+
+    if (!string.IsNullOrWhiteSpace(location))
+    {
+        query = query.Where(m =>
+            m.Caterer != null &&
+            (
+                m.Caterer.Address.Contains(location) ||
+                m.Caterer.BusinessName.Contains(location)
+            ));
+    }
+
+    var menuItems = query
         .OrderByDescending(m => m.Id)
         .ToList();
+
+    ViewBag.Location = location;
 
     return View(menuItems);
 }

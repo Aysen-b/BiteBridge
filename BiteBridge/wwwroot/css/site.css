@@ -650,3 +650,70 @@ body {
 .notification-actions {
     margin-top: 12px;
 }
+.location-filter-box {
+    background: white;
+    width: 620px;
+    max-width: 95%;
+    margin: 20px auto 30px auto;
+    padding: 20px;
+    border-radius: 18px;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.13);
+    text-align: center;
+}
+
+.location-filter-box h3 {
+    margin-bottom: 14px;
+    font-weight: 800;
+}
+
+.location-filter-box form {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.location-filter-box input {
+    flex: 1;
+    min-width: 260px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+.location-filter-box button,
+.location-filter-box a {
+    background: #0d6efd;
+    color: white;
+    text-decoration: none;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-weight: 700;
+}
+
+.location-filter-box a {
+    background: #6c757d;
+}
+
+.caterer-location {
+    font-size: 14px;
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+.map-link {
+    display: inline-block;
+    background: #198754;
+    color: white;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.map-link:hover {
+    color: white;
+}

@@ -61,6 +61,55 @@ namespace BiteBridge.Controllers
 
             return View(items);
         }
+        public async Task<IActionResult> Profile()
+{
+    var user = await _userManager.GetUserAsync(User);
+
+    if (user == null || user.RoleName != "Caterer")
+    {
+        return RedirectToAction("Dashboard", "Home");
+    }
+
+    var caterer = await GetOrCreateCaterer(user.Email ?? "");
+
+    return View(caterer);
+}
+
+[HttpPost]
+public async Task<IActionResult> Profile(
+    string businessName,
+    string description,
+    string address,
+    double latitude,
+    double longitude)
+{
+    var user = await _userManager.GetUserAsync(User);
+
+    if (user == null || user.RoleName != "Caterer")
+    {
+        return RedirectToAction("Dashboard", "Home");
+    }
+
+    var caterer = await GetOrCreateCaterer(user.Email ?? "");
+
+    caterer.BusinessName = businessName;
+    caterer.Description = description;
+    caterer.Address = address;
+    caterer.Latitude = latitude;
+    caterer.Longitude = longitude;
+
+    _context.SystemLogs.Add(new SystemLog
+    {
+        Level = "Info",
+        Action = "CatererLocationUpdated",
+        UserEmail = user.Email,
+        Details = $"Caterer location updated: {address}"
+    });
+
+    await _context.SaveChangesAsync();
+
+    return RedirectToAction("Index");
+}
 
         public async Task<IActionResult> CreateMenuItem()
         {
