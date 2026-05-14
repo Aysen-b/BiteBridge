@@ -536,3 +536,50 @@ body {
     font-size: 14px;
     margin-bottom: 6px;
 }
+
+.rate-page {
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 15px;
+}
+
+.rate-card {
+    background: white;
+    width: 650px;
+    max-width: 95%;
+    padding: 30px;
+    border-radius: 22px;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+}
+
+.rate-card h1 {
+    margin-bottom: 20px;
+}
+
+.rate-btn,
+.rate-btn-small {
+    display: inline-block;
+    border: none;
+    text-decoration: none;
+    color: white;
+    background: #f59f00;
+    padding: 9px 14px;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.rate-btn:hover,
+.rate-btn-small:hover {
+    color: white;
+}
+
+.rating-display {
+    background: #fff9db;
+    border-left: 5px solid #f59f00;
+    padding: 15px;
+    border-radius: 12px;
+    margin-top: 15px;
+}

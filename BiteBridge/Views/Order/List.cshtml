@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "My Orders";
+    var ratings = ViewBag.Ratings as Dictionary<int, BiteBridge.Models.Rating>;
 }
 
 <div class="orders-page">
@@ -17,6 +18,14 @@
     {
         @foreach (var order in Model)
         {
+            var hasRating = ratings != null && ratings.ContainsKey(order.Id);
+            BiteBridge.Models.Rating? rating = null;
+
+            if (hasRating && ratings != null)
+            {
+                rating = ratings[order.Id];
+            }
+
             <div class="order-card">
                 <p><strong>Order No:</strong> BB-@order.Id</p>
                 <p><strong>User:</strong> @order.UserEmail</p>
@@ -36,6 +45,10 @@
                         Agreement PDF
                     </a>
 
+                    <a class="rate-btn-small" asp-controller="Order" asp-action="Rate" asp-route-id="@order.Id">
+                        @(hasRating ? "Edit Rating" : "Rate Order")
+                    </a>
+
                     <a class="delete-btn" asp-controller="Order" asp-action="Delete" asp-route-id="@order.Id">
                         Delete
                     </a>
@@ -49,6 +62,16 @@
                         <li>@item.name x 1 → @item.price TL</li>
                     }
                 </ul>
+
+                @if (rating != null)
+                {
+                    <div class="rating-display">
+                        <h4>⭐ Your Rating</h4>
+                        <p><strong>Score:</strong> @rating.Score / 5</p>
+                        <p><strong>Comment:</strong> @rating.Comment</p>
+                        <p><small>@rating.CreatedAt.ToString("dd.MM.yyyy HH:mm")</small></p>
+                    </div>
+                }
             </div>
         }
     }

@@ -1,0 +1,51 @@
+@model BiteBridge.Models.Order
+
+@{
+    ViewData["Title"] = "Rate Order";
+    var existingRating = ViewBag.ExistingRating as BiteBridge.Models.Rating;
+}
+
+<div class="rate-page">
+    <div class="rate-card">
+        <h1>⭐ Rate Your Order</h1>
+
+        <p><strong>Order No:</strong> BB-@Model.Id</p>
+        <p><strong>Total:</strong> @Model.TotalPrice TL</p>
+
+        <h4>Items</h4>
+        <ul>
+            @foreach (var item in Model.ItemsList)
+            {
+                <li>@item.name → @item.price TL</li>
+            }
+        </ul>
+
+        <form asp-controller="Order" asp-action="Rate" method="post">
+            <input type="hidden" name="orderId" value="@Model.Id" />
+
+            <div class="form-group mb-3">
+                <label>Rating Score</label>
+                <select name="score" class="form-control">
+                    <option value="5" selected="@(existingRating?.Score == 5)">5 - Excellent</option>
+                    <option value="4" selected="@(existingRating?.Score == 4)">4 - Good</option>
+                    <option value="3" selected="@(existingRating?.Score == 3)">3 - Average</option>
+                    <option value="2" selected="@(existingRating?.Score == 2)">2 - Bad</option>
+                    <option value="1" selected="@(existingRating?.Score == 1)">1 - Very Bad</option>
+                </select>
+            </div>
+
+            <div class="form-group mb-3">
+                <label>Comment</label>
+                <textarea name="comment" class="form-control" rows="4" placeholder="Write your comment...">@existingRating?.Comment</textarea>
+            </div>
+
+            <button type="submit" class="rate-btn">
+                Save Rating
+            </button>
+
+            <a class="dashboard-btn secondary" asp-controller="Order" asp-action="List">
+                Back to Orders
+            </a>
+        </form>
+    </div>
+</div>

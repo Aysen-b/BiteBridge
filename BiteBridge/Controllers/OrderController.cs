@@ -45,6 +45,14 @@ namespace BiteBridge.Controllers
                 .OrderByDescending(o => o.Id)
                 .ToList();
 
+            var orderIds = orders.Select(o => o.Id).ToList();
+
+            var ratings = _context.Ratings
+                .Where(r => orderIds.Contains(r.OrderId) && r.UserEmail == userEmail)
+                .ToDictionary(r => r.OrderId, r => r);
+
+            ViewBag.Ratings = ratings;
+
             return View(orders);
         }
 
@@ -62,11 +70,86 @@ namespace BiteBridge.Controllers
 
             if (order != null)
             {
-                AddLog("Warning", "OrderDeleted", order.UserEmail, $"Order BB-{order.Id} was deleted.");
+                var relatedRatings = _context.Ratings.Where(r => r.OrderId == order.Id).ToList();
 
+                _context.Ratings.RemoveRange(relatedRatings);
                 _context.Orders.Remove(order);
                 _context.SaveChanges();
+
+                AddLog("Warning", "OrderDeleted", order.UserEmail, $"Order BB-{order.Id} was deleted.");
             }
+
+            return RedirectToAction("List");
+        }
+
+        public IActionResult Rate(int id)
+        {
+            var order = GetCurrentUserOrder(id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            var userEmail = User.Identity?.Name ?? "";
+
+            var existingRating = _context.Ratings
+                .FirstOrDefault(r => r.OrderId == id && r.UserEmail == userEmail);
+
+            ViewBag.ExistingRating = existingRating;
+
+            return View(order);
+        }
+
+        [HttpPost]
+        public IActionResult Rate(int orderId, int score, string comment)
+        {
+            var order = GetCurrentUserOrder(orderId);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            if (score < 1 || score > 5)
+            {
+                score = 5;
+            }
+
+            if (string.IsNullOrWhiteSpace(comment))
+            {
+                comment = "No comment provided.";
+            }
+
+            var userEmail = User.Identity?.Name ?? "";
+
+            var existingRating = _context.Ratings
+                .FirstOrDefault(r => r.OrderId == orderId && r.UserEmail == userEmail);
+
+            if (existingRating == null)
+            {
+                var rating = new Rating
+                {
+                    OrderId = orderId,
+                    UserEmail = userEmail,
+                    Score = score,
+                    Comment = comment
+                };
+
+                _context.Ratings.Add(rating);
+
+                AddLog("Info", "RatingCreated", userEmail, $"User rated order BB-{orderId} with {score} stars.");
+            }
+            else
+            {
+                existingRating.Score = score;
+                existingRating.Comment = comment;
+                existingRating.CreatedAt = DateTime.Now;
+
+                AddLog("Info", "RatingUpdated", userEmail, $"User updated rating for order BB-{orderId}.");
+            }
+
+            _context.SaveChanges();
 
             return RedirectToAction("List");
         }

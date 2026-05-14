@@ -14,5 +14,6 @@ namespace BiteBridge.Models
         public DbSet<Caterer> Caterers { get; set; }
         public DbSet<MenuItem> MenuItems { get; set; }
         public DbSet<MenuItemOption> MenuItemOptions { get; set; }
+        public DbSet<Rating> Ratings { get; set; }
     }
 }
