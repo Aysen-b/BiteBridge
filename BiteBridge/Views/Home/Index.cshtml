@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IEnumerable<BiteBridge.Models.MenuItem>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -8,13 +10,81 @@
 </div>
 
 <div class="menu">
-    <div class="menu-card">
-        <h3>🍔 Burger</h3>
-        <p class="price">120 TL</p>
-        <button onclick="addToCart({ name: 'Burger', price: 120 })">
-            Add to Cart
-        </button>
-    </div>
+    @if (Model != null && Model.Any())
+    {
+        @foreach (var item in Model)
+        {
+            var priceForJs = item.Price.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+            <div class="menu-card dynamic-menu-card">
+                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                {
+                    <img src="@item.ImageUrl" alt="@item.Name" class="menu-item-image" />
+                }
+                else
+                {
+                    <div class="menu-placeholder">🍽️</div>
+                }
+
+                <h3>@item.Name</h3>
+
+                <p class="menu-description">@item.Description</p>
+
+                <p class="price">@item.Price TL</p>
+
+                @if (item.Caterer != null)
+                {
+                    <p class="caterer-name">
+                        Restaurant: @item.Caterer.BusinessName
+                    </p>
+                }
+
+                @if (item.Options.Any())
+                {
+                    <div class="customization-box">
+                        <h5>Customization Options</h5>
+
+                        @foreach (var option in item.Options)
+                        {
+                            var optionPriceForJs = option.ExtraPrice.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+                            <label class="customization-option">
+                                <input type="checkbox"
+                                       class="option-checkbox-@item.Id"
+                                       data-name="@option.OptionName"
+                                       data-type="@option.OptionType"
+                                       data-price="@optionPriceForJs" />
+
+                                @option.OptionType: @option.OptionName
+
+                                @if (option.ExtraPrice > 0)
+                                {
+                                    <span> (+@option.ExtraPrice TL)</span>
+                                }
+                            </label>
+                        }
+                    </div>
+                }
+
+                <button onclick="addMenuItemToCart(this)"
+                        data-id="@item.Id"
+                        data-name="@item.Name"
+                        data-price="@priceForJs">
+                    Add to Cart
+                </button>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="menu-card">
+            <h3>🍔 Burger</h3>
+            <p class="price">120 TL</p>
+            <button onclick="addToCart({ name: 'Burger', price: 120 })">
+                Add to Cart
+            </button>
+        </div>
+    }
 </div>
 
 <div class="cart-box">

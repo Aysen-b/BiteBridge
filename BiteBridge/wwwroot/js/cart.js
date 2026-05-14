@@ -7,6 +7,49 @@ function addToCart(item) {
     displayCart();
 }
 
+function addMenuItemToCart(button) {
+    const menuItemId = button.dataset.id;
+    const itemName = button.dataset.name;
+    const basePrice = parseFloat(button.dataset.price);
+
+    const selectedOptions = [];
+    let extraTotal = 0;
+
+    const optionCheckboxes = document.querySelectorAll(".option-checkbox-" + menuItemId);
+
+    optionCheckboxes.forEach(function (checkbox) {
+        if (checkbox.checked) {
+            const optionName = checkbox.dataset.name;
+            const optionType = checkbox.dataset.type;
+            const optionPrice = parseFloat(checkbox.dataset.price || "0");
+
+            selectedOptions.push({
+                name: optionName,
+                type: optionType,
+                price: optionPrice
+            });
+
+            extraTotal += optionPrice;
+        }
+    });
+
+    let finalName = itemName;
+
+    if (selectedOptions.length > 0) {
+        const optionNames = selectedOptions.map(option => option.name).join(", ");
+        finalName = itemName + " (" + optionNames + ")";
+    }
+
+    const finalPrice = basePrice + extraTotal;
+
+    addToCart({
+        name: finalName,
+        price: finalPrice,
+        basePrice: basePrice,
+        options: selectedOptions
+    });
+}
+
 function getCart() {
     return JSON.parse(localStorage.getItem("cart")) || [];
 }
@@ -26,7 +69,7 @@ function removeFromCart(index) {
 
 function calculateTotal(cartItems) {
     let total = 0;
-    cartItems.forEach(item => total += item.price);
+    cartItems.forEach(item => total += Number(item.price));
     return total;
 }
 
@@ -43,25 +86,10 @@ function showPayment() {
 
     let total = calculateTotal(cartItems);
 
-    let groupedItems = {};
-
-    cartItems.forEach(item => {
-        if (!groupedItems[item.name]) {
-            groupedItems[item.name] = {
-                name: item.name,
-                count: 0,
-                total: 0
-            };
-        }
-
-        groupedItems[item.name].count++;
-        groupedItems[item.name].total += item.price;
-    });
-
     let summaryHtml = "<h4>Order Summary</h4><ul>";
 
-    Object.values(groupedItems).forEach(item => {
-        summaryHtml += `<li>${item.name} x ${item.count} → ${item.total} TL</li>`;
+    cartItems.forEach(item => {
+        summaryHtml += `<li>${item.name} → ${item.price} TL</li>`;
     });
 
     summaryHtml += `</ul><p><b>Total:</b> ${total} TL</p>`;
@@ -166,7 +194,7 @@ function displayCart() {
     let total = 0;
 
     cartItems.forEach(function (item, index) {
-        total += item.price;
+        total += Number(item.price);
 
         cartContainer.innerHTML += `
             <p>

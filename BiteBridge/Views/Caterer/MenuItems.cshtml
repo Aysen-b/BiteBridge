@@ -1,0 +1,65 @@
+@model IEnumerable<BiteBridge.Models.MenuItem>
+
+@{
+    ViewData["Title"] = "My Menu Items";
+}
+
+<div class="menu-management-page">
+    <h1>🍽️ My Menu Items</h1>
+    <p>Manage menu items created by this caterer account.</p>
+
+    <a class="dashboard-btn" asp-controller="Caterer" asp-action="CreateMenuItem">
+        + Create New Menu Item
+    </a>
+
+    @if (!Model.Any())
+    {
+        <div class="order-card mt-4">
+            <p>No menu items created yet.</p>
+        </div>
+    }
+    else
+    {
+        <div class="menu-management-grid">
+            @foreach (var item in Model)
+            {
+                <div class="menu-management-card">
+                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                    {
+                        <img src="@item.ImageUrl" alt="@item.Name" />
+                    }
+
+                    <h3>@item.Name</h3>
+                    <p>@item.Description</p>
+                    <h4>@item.Price TL</h4>
+
+                    <h5>Customization Options</h5>
+
+                    @if (item.Options.Any())
+                    {
+                        <ul>
+                            @foreach (var option in item.Options)
+                            {
+                                <li>
+                                    @option.OptionType: @option.OptionName
+                                    @if (option.ExtraPrice > 0)
+                                    {
+                                        <span>(+@option.ExtraPrice TL)</span>
+                                    }
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p>No options defined.</p>
+                    }
+
+                    <a class="delete-btn" asp-controller="Caterer" asp-action="DeleteMenuItem" asp-route-id="@item.Id">
+                        Delete
+                    </a>
+                </div>
+            }
+        </div>
+    }
+</div>

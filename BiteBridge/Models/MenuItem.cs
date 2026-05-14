@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BiteBridge.Models
 {
@@ -12,6 +13,7 @@ namespace BiteBridge.Models
         public string? Description { get; set; }
 
         [Required]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
 
         public string? ImageUrl { get; set; }
@@ -19,5 +21,7 @@ namespace BiteBridge.Models
         public int CatererId { get; set; }
 
         public Caterer? Caterer { get; set; }
+
+        public ICollection<MenuItemOption> Options { get; set; } = new List<MenuItemOption>();
     }
 }

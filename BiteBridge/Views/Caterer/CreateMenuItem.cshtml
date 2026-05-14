@@ -1,0 +1,60 @@
+@{
+    ViewData["Title"] = "Create Menu Item";
+}
+
+<div class="create-menu-page">
+    <div class="create-menu-card">
+        <h1>🍽️ Create Menu Item</h1>
+        <p>Add a new food item with image and customization options.</p>
+
+        <form asp-controller="Caterer" asp-action="CreateMenuItem" method="post" enctype="multipart/form-data">
+            <div class="form-group mb-3">
+                <label>Menu Item Name</label>
+                <input name="name" class="form-control" placeholder="Example: Chicken Burger" required />
+            </div>
+
+            <div class="form-group mb-3">
+                <label>Description</label>
+                <textarea name="description" class="form-control" placeholder="Short description..." required></textarea>
+            </div>
+
+            <div class="form-group mb-3">
+                <label>Price</label>
+                <input name="price" type="number" step="0.01" class="form-control" placeholder="120" required />
+            </div>
+
+            <div class="form-group mb-3">
+                <label>Image Upload</label>
+                <input name="imageFile" type="file" class="form-control" accept="image/*" />
+            </div>
+
+            <hr />
+
+            <h3>Dynamic Customization Options</h3>
+            <p class="text-muted">
+                Enter options separated by commas. These options will be saved in the database.
+            </p>
+
+            <div class="form-group mb-3">
+                <label>Option Names</label>
+                <input name="optionNames" class="form-control" placeholder="No onion, Extra cheese, BBQ sauce" />
+            </div>
+
+            <div class="form-group mb-3">
+                <label>Option Types</label>
+                <input name="optionTypes" class="form-control" placeholder="Removable Ingredient, Optional Addition, Sauce" />
+            </div>
+
+            <div class="form-group mb-3">
+                <label>Extra Prices</label>
+                <input name="optionPrices" class="form-control" placeholder="0, 20, 5" />
+            </div>
+
+            <button type="submit" class="auth-btn">Create Menu Item</button>
+
+            <a class="dashboard-btn secondary" asp-controller="Caterer" asp-action="MenuItems">
+                Back to My Menu
+            </a>
+        </form>
+    </div>
+</div>

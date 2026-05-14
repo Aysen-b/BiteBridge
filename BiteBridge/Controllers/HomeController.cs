@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using BiteBridge.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BiteBridge.Controllers;
 
@@ -18,9 +19,15 @@ public class HomeController : Controller
     }
 
     public IActionResult Index()
-    {
-        return View();
-    }
+{
+    var menuItems = _context.MenuItems
+        .Include(m => m.Caterer)
+        .Include(m => m.Options)
+        .OrderByDescending(m => m.Id)
+        .ToList();
+
+    return View(menuItems);
+}
 
     [Authorize]
     public async Task<IActionResult> Dashboard()
