@@ -81,17 +81,23 @@ namespace BiteBridge.Controllers
             {
                 AddLog("Info", "LoginAttempt", model.Email, "User attempted to login.");
 
-                var result = await _signInManager.PasswordSignInAsync(
-                    model.Email,
-                    model.Password,
-                    isPersistent: false,
-                    lockoutOnFailure: false
-                );
+                var user = await _userManager.FindByEmailAsync(model.Email);
 
-                if (result.Succeeded)
+                if (user != null)
                 {
-                    AddLog("Info", "LoginSuccess", model.Email, "User logged in successfully.");
-                    return RedirectToAction("Dashboard", "Home");
+                    var passwordIsValid = await _userManager.CheckPasswordAsync(user, model.Password);
+
+                    if (passwordIsValid)
+                    {
+                        var code = new Random().Next(100000, 999999).ToString();
+
+                        TempData["TwoFactorEmail"] = model.Email;
+                        TempData["TwoFactorCode"] = code;
+
+                        AddLog("Info", "TwoFactorCodeGenerated", model.Email, "2FA verification code generated.");
+
+                        return RedirectToAction("VerifyTwoFactor");
+                    }
                 }
 
                 AddLog("Warning", "LoginFailed", model.Email, "Invalid login attempt.");
@@ -99,6 +105,68 @@ namespace BiteBridge.Controllers
             }
 
             return View(model);
+        }
+
+        public IActionResult VerifyTwoFactor()
+        {
+            var email = TempData["TwoFactorEmail"]?.ToString();
+            var code = TempData["TwoFactorCode"]?.ToString();
+
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(code))
+            {
+                return RedirectToAction("Login");
+            }
+
+            ViewBag.Email = email;
+            ViewBag.DemoCode = code;
+
+            TempData.Keep("TwoFactorEmail");
+            TempData.Keep("TwoFactorCode");
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> VerifyTwoFactor(string verificationCode)
+        {
+            var email = TempData["TwoFactorEmail"]?.ToString();
+            var correctCode = TempData["TwoFactorCode"]?.ToString();
+
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(correctCode))
+            {
+                return RedirectToAction("Login");
+            }
+
+            if (verificationCode == correctCode)
+            {
+                var user = await _userManager.FindByEmailAsync(email);
+
+                if (user == null)
+                {
+                    return RedirectToAction("Login");
+                }
+
+                await _signInManager.SignInAsync(user, isPersistent: false);
+
+                AddLog("Info", "TwoFactorSuccess", email, "User completed 2FA verification.");
+                AddLog("Info", "LoginSuccess", email, "User logged in successfully after 2FA.");
+
+                TempData.Remove("TwoFactorEmail");
+                TempData.Remove("TwoFactorCode");
+
+                return RedirectToAction("Dashboard", "Home");
+            }
+
+            ViewBag.Email = email;
+            ViewBag.DemoCode = correctCode;
+            ViewBag.Error = "Invalid verification code.";
+
+            AddLog("Warning", "TwoFactorFailed", email, "User entered invalid 2FA verification code.");
+
+            TempData.Keep("TwoFactorEmail");
+            TempData.Keep("TwoFactorCode");
+
+            return View();
         }
 
         public async Task<IActionResult> Logout()

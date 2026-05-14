@@ -1,0 +1,46 @@
+@{
+    ViewData["Title"] = "Two-Factor Verification";
+}
+
+<div class="auth-page">
+    <div class="auth-card two-factor-card">
+        <h2>🔐 Two-Factor Verification</h2>
+
+        <p class="auth-subtitle">
+            A 6-digit verification code was generated for:
+        </p>
+
+        <p><strong>@ViewBag.Email</strong></p>
+
+        <div class="demo-code-box">
+            <p>Demo Verification Code</p>
+            <h1>@ViewBag.DemoCode</h1>
+        </div>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="text-danger mb-3">
+                @ViewBag.Error
+            </div>
+        }
+
+        <form asp-controller="Account" asp-action="VerifyTwoFactor" method="post">
+            <div class="form-group mb-3">
+                <label>Verification Code</label>
+                <input name="verificationCode"
+                       class="form-control"
+                       maxlength="6"
+                       placeholder="Enter 6-digit code"
+                       required />
+            </div>
+
+            <button type="submit" class="auth-btn">
+                Verify and Login
+            </button>
+
+            <a class="dashboard-btn secondary" asp-controller="Account" asp-action="Login">
+                Back to Login
+            </a>
+        </form>
+    </div>
+</div>

@@ -717,3 +717,29 @@ body {
 .map-link:hover {
     color: white;
 }
+
+.two-factor-card {
+    max-width: 460px;
+}
+
+.demo-code-box {
+    background: #fff9db;
+    border-left: 6px solid #f59f00;
+    padding: 18px;
+    border-radius: 14px;
+    margin: 18px 0;
+    text-align: center;
+}
+
+.demo-code-box p {
+    margin-bottom: 6px;
+    font-weight: 700;
+    color: #555;
+}
+
+.demo-code-box h1 {
+    font-size: 42px;
+    letter-spacing: 8px;
+    font-weight: 900;
+    color: #f59f00;
+}
